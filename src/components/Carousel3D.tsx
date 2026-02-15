@@ -10,7 +10,8 @@ const Carousel3D: React.FC<Carousel3DProps> = ({ images }) => {
   const ringRef = useRef<HTMLDivElement>(null);
 
   // --- Configuration ---
-  const CARD_WIDTH_DESKTOP = 600; 
+  // Reduced card width on desktop to fit within new localized height constraints
+  const CARD_WIDTH_DESKTOP = 400; // 400 * 1.6 = 640px height. Fits better in 600-800px container.
   // We use functional check for mobile width in the code below instead of a constant
   const GAP = 30; 
 
@@ -124,25 +125,24 @@ const Carousel3D: React.FC<Carousel3DProps> = ({ images }) => {
   }, [radius, SLOTS, displayImages]); // Re-run if geometry changes
 
   // Event Handlers
-  const onPointerDown = (e: React.PointerEvent | React.TouchEvent) => {
+  const onPointerDown = (e: React.PointerEvent) => {
      const s = state.current;
      s.isDragging = true;
-     // Unified pointer x
-     const x = 'touches' in e ? e.touches[0].clientX : (e as React.PointerEvent).clientX;
-     s.startX = x;
-     s.lastX = x;
+     s.startX = e.clientX;
+     s.lastX = e.clientX;
      s.startRotation = s.rotation;
      s.lastTime = performance.now();
      s.velocity = 0;
      
      if (containerRef.current) containerRef.current.style.cursor = "grabbing";
+     (e.target as HTMLElement).setPointerCapture(e.pointerId);
   };
 
-  const onPointerMove = (e: React.PointerEvent | React.TouchEvent) => {
+  const onPointerMove = (e: React.PointerEvent) => {
      const s = state.current;
      if (!s.isDragging) return;
      
-     const x = 'touches' in e ? e.touches[0].clientX : (e as React.PointerEvent).clientX;
+     const x = e.clientX;
      const dx = x - s.startX;
      
      // Sensitivity
@@ -166,22 +166,26 @@ const Carousel3D: React.FC<Carousel3DProps> = ({ images }) => {
      }
   };
 
-  const onPointerUp = () => {
+  const onPointerUp = (e?: React.PointerEvent) => {
      state.current.isDragging = false;
      if (containerRef.current) containerRef.current.style.cursor = "grab";
+     if (e && e.target) {
+        try {
+            (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+        } catch (e) {
+            // ignore if capture was lost
+        }
+     }
   };
 
   return (
     <div 
         ref={containerRef}
-        className="w-full h-[500px] md:h-screen max-h-[900px] relative overflow-hidden bg-transparent flex items-center justify-center cursor-grab active:cursor-grabbing touch-none perspective-container"
+        className="w-full h-[500px] md:h-[700px] relative overflow-hidden bg-transparent flex items-center justify-center cursor-grab active:cursor-grabbing touch-pan-y perspective-container"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerLeave={onPointerUp}
-        onTouchStart={onPointerDown}
-        onTouchMove={onPointerMove}
-        onTouchEnd={onPointerUp}
         style={{ perspective: "1200px" }} // Deep perspective for immersion
     >
         {/** The World (Rotates) */}
