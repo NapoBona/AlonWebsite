@@ -12,8 +12,8 @@ const GallerySection = () => {
   const currentAlbum = albums[activeAlbum];
 
   return (
-    <section id="gallery" className="section-padding bg-surface overflow-hidden">
-      <div className="max-w-6xl mx-auto">
+    <section id="gallery" className="py-20 bg-surface overflow-hidden">
+      <div className="max-w-6xl mx-auto px-6 md:px-12 lg:px-24 xl:px-32">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -54,20 +54,21 @@ const GallerySection = () => {
             {t(currentAlbum.description)}
           </motion.p>
         </AnimatePresence>
-
-        {/* 3D Carousel */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentAlbum.id}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.4 }}
-          >
-            <Carousel3D images={currentAlbum.images} />
-          </motion.div>
-        </AnimatePresence>
       </div>
+
+      {/* 3D Carousel - Full Width */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentAlbum.id}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 0.4 }}
+          className="w-full"
+        >
+          <Carousel3D images={currentAlbum.images} />
+        </motion.div>
+      </AnimatePresence>
     </section>
   );
 };

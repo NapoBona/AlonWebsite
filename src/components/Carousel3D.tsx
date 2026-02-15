@@ -119,6 +119,7 @@ const Carousel3D: React.FC<Carousel3DProps> = ({ images }) => {
       
       rafId = requestAnimationFrame(update);
     };
+    // Ensure initial update runs
     update();
     
     return () => cancelAnimationFrame(rafId);
