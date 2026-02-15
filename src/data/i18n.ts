@@ -3,19 +3,27 @@ export type Lang = "he" | "en";
 export const translations = {
   nav: {
     home: { he: "בית", en: "Home" },
-    bio: { he: "ביוגרפיה", en: "Biography" },
+    bio: { he: "על האמן", en: "Biography" },
     gallery: { he: "גלריה", en: "Gallery" },
     events: { he: "אירועים", en: "Events" },
     contact: { he: "צור קשר", en: "Contact" },
   },
   hero: {
-    name: { he: "אלוניעקבי", en: "Artist Name" },
+    name: { he: "אלון יהודה דב יעקבי", en: "Alon Yehuda Dov Yaacoby" },
     tagline: { he: "מוזיקה מהלב", en: "Music from the Heart" },
   },
   bio: {
-    title: { he: "ביוגרפיה", en: "Biography" },
+    title: { he: "על האמן", en: "Biography" },
     text: {
-      he: " אלון יהודה דב יעקבי הוא מוסיקאי ונגן פאנטם שחוקר את הצלילים ואת השקט שביניהם. לפני 10 שנים התחיל המסע בעולם הצלילים המרפאים.  יחד עם הפאנטם, כלים מדיטטיביים נוספים, הקשבה למרחב, הנגשת הצלילים ורפואת המוסיקה, מנחה sound therapy, מנגן באירועים ומלווה סדנאות וריטריטים. כשיחד עם הצלילים והמרחב שנוצר, ניתן להגיע למקום המאפשר ביטוי של העולם הרגשי ולהתחבר למה שהכי חי בלב והנשמה. לנשום עמוק, להיות בנוכחות. ",
+      he: `אלון יהודה דב יעקבי, מוסיקאי ונגן פאנטם שחוקר את הצלילים ואת השקט שביניהם.
+
+לפני 10 שנים התחיל המסע בעולם הצלילים המרפאים, כאשר יחד עם הפאנטמים, כלים מדיטטיביים נוספים, הקשבה למרחב והנגשת הצלילים ורפואת המוסיקה מנגן ומנחה מרחבי מסעות צלילים, מנגן באירועים ומלווה סדנאות וריטריטים.
+
+יחד הצלילים והמרחב שנוצר, ניתן להגיע למקום המאפשר ביטוי של העולם הרגשי ולהתחבר למה שהכי חי בלב והנשמה.
+לתת למחשבות מנוחה ולאפשר לעצמינו לרגע להרפות ורק להרגיש, להתענג על אדוות המסע ולהגיע לתובנות מרגשות.
+
+לנשום עמוק,
+להיות בנוכחות.`,
       en: "A multidisciplinary musical artist blending traditional sounds with contemporary music. For over a decade, creating unique musical experiences that connect cultures and traditions. From drumming workshops in the desert to performances on international stages, the music touches souls and inspires.",
     },
   },

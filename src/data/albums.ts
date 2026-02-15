@@ -1,72 +1,90 @@
-// Rhythm Workshops
-import rhythmWorkshops1 from "@/assets/gallery/rhythm-workshops/01.jpg";
-import rhythmWorkshops2 from "@/assets/gallery/rhythm-workshops/02.jpg";
-import rhythmWorkshops3 from "@/assets/gallery/rhythm-workshops/03.jpg";
-import rhythmWorkshops4 from "@/assets/gallery/rhythm-workshops/04.jpg";
-import rhythmWorkshops5 from "@/assets/gallery/rhythm-workshops/05.jpg";
+// 1. Acoustic Sound Healing
+import acoustic1 from "@/assets/gallery/sound-healing/01.jpg";
+import acoustic2 from "@/assets/gallery/sound-healing/02.jpg";
+import acoustic3 from "@/assets/gallery/sound-healing/03.jpg";
+import acoustic4 from "@/assets/gallery/sound-healing/04.jpg";
+import acoustic5 from "@/assets/gallery/sound-healing/05.jpg";
+import acoustic6 from "@/assets/gallery/sound-healing/06.jpg";
+import acoustic7 from "@/assets/gallery/sound-healing/07.jpg";
+import acoustic8 from "@/assets/gallery/sound-healing/08.jpg";
 
-// Live Performances
-import livePerformances1 from "@/assets/gallery/live-performances/01.jpg";
-import livePerformances2 from "@/assets/gallery/live-performances/02.jpg";
+// 2. Electronic Pantam Performance
+import electronic1 from "@/assets/gallery/live-performances/01.jpg";
+import electronic2 from "@/assets/gallery/live-performances/02.jpg";
 
-// Nature & Sounds
-import natureSounds1 from "@/assets/gallery/nature-sounds/01.jpg";
-import natureSounds2 from "@/assets/gallery/nature-sounds/02.jpg";
-
-// Ceremonies & Events
+// 3. Ceremonies & Events
 import ceremonies1 from "@/assets/gallery/ceremonies/01.jpg";
 import ceremonies2 from "@/assets/gallery/ceremonies/02.jpg";
 
-// Helper function to create array of 6 images with placeholders
-const createImageArray = (images: string[]): string[] => {
-  const imageArray = [...images];
-  while (imageArray.length < 6) {
-    imageArray.push(""); // Empty string for placeholder
-  }
-  return imageArray.slice(0, 6);
-};
+// 4. Retreats & Workshops
+import workshops1 from "@/assets/gallery/workshops/01.jpg";
+import workshops2 from "@/assets/gallery/workshops/02.jpg";
+import workshops3 from "@/assets/gallery/workshops/03.jpg";
+import workshops4 from "@/assets/gallery/workshops/04.jpg";
+import workshops5 from "@/assets/gallery/workshops/05.jpg";
+
+// 5. Behind the Lens (Bonus)
+import extra1 from "@/assets/gallery/extras/01.jpg";
+import extra2 from "@/assets/gallery/extras/02.jpg";
+import extra3 from "@/assets/gallery/extras/03.jpg";
+import extra4 from "@/assets/gallery/extras/04.jpg";
+import extra5 from "@/assets/gallery/extras/05.jpg";
+import extra6 from "@/assets/gallery/extras/06.jpg";
+
+// Helper function
+const createImages = (images: string[]) => images;
 
 export const albums = [
   {
     id: 1,
-    name: { he: "סדנאות קצב", en: "Rhythm Workshops" },
+    name: { he: "סאונד הילינג אקוסטי", en: "Acoustic Sound Healing" },
     description: {
-      he: "סדנאות תיפוף קבוצתיות במדבר — חיבור לקצב הפנימי דרך כלי הקשה מסורתיים.",
-      en: "Group drumming workshops in the desert — connecting to inner rhythm through traditional percussion.",
+      he: "מסע צלילים חיים, עם פאנטמים וכלים מכל העולם. קערות טיבטיות, פעמונים וצלילי טבע נעימים.",
+      en: "A live journey of sounds, with Pantams and instruments from around the world. Tibetan bowls, bells and pleasant nature sounds.",
     },
-    images: createImageArray([
-      rhythmWorkshops1,
-      rhythmWorkshops2,
-      rhythmWorkshops3,
-      rhythmWorkshops4,
-      rhythmWorkshops5,
+    images: createImages([
+      acoustic1, acoustic2, acoustic3, acoustic4, 
+      acoustic5, acoustic6, acoustic7, acoustic8
     ]),
   },
   {
     id: 2,
-    name: { he: "הופעות חיות", en: "Live Performances" },
+    name: { he: "הופעת פאנטם אלקטרונית", en: "Electronic Pantam Performance" },
     description: {
-      he: "הופעות על במות ברחבי הארץ, מפסטיבלים גדולים ועד ערבים אינטימיים.",
-      en: "Performances on stages across the country, from large festivals to intimate evenings.",
+      he: "מסע בצליליי הפאנטם. ההופעה כוללת שילוב של סט אפ סאונד הילינג בשילוב ציוד לניגון והקלטה בלייב. (אפשרות לאירועים גדולים).",
+      en: "A journey into the sounds of the Pantam. The performance includes a combination of a sound healing setup with live playing and recording equipment. (Option for large events).",
     },
-    images: createImageArray([livePerformances1, livePerformances2]),
+    images: createImages([electronic1, electronic2]),
   },
   {
     id: 3,
-    name: { he: "טבע וצלילים", en: "Nature & Sounds" },
+    name: { he: "ניגון בטקסים ואירועים", en: "Ceremonies & Events" },
     description: {
-      he: "מפגשי ריפוי בצלילים בטבע — קערות טיבטיות, גונגים וכלי נגינה אקוסטיים.",
-      en: "Sound healing sessions in nature — Tibetan bowls, gongs, and acoustic instruments.",
+      he: "ניגונים בחתונות, טקסים אינטימיים ומרחבים רגישים.",
+      en: "Playing in weddings, intimate ceremonies and sensitive spaces.",
     },
-    images: createImageArray([natureSounds1, natureSounds2]),
+    images: createImages([ceremonies1, ceremonies2]),
   },
   {
     id: 4,
-    name: { he: "טקסים ואירועים", en: "Ceremonies & Events" },
+    name: { he: "ריטריטים וסדנאות", en: "Retreats & Workshops" },
     description: {
-      he: "ליווי מוזיקלי לטקסים, חתונות ואירועים מיוחדים עם אנרגיה ייחודית.",
-      en: "Musical accompaniment for ceremonies, weddings, and special events with unique energy.",
+      he: "ניגוני סאונד הילינג לאירועי חברה, ריטריטים ומרחבי ריפוי.",
+      en: "Sound healing melodies for corporate events, retreats and healing spaces.",
     },
-    images: createImageArray([ceremonies1, ceremonies2]),
+    images: createImages([
+      workshops1, workshops2, workshops3, workshops4, workshops5
+    ]),
+  },
+  {
+    id: 5,
+    name: { he: "מאחורי העדשה", en: "Behind the Lens" },
+    description: {
+      he: "עם כמה תמונות מובחרות כולל הרבה טיפות",
+      en: "Selected photos including many drops.",
+    },
+    images: createImages([
+      extra1, extra2, extra3, extra4, extra5, extra6
+    ]),
   },
 ];

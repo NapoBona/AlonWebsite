@@ -106,10 +106,16 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-x-hidden w-full m-0 p-0;
     font-family: var(--font-body);
     transition: background-color 0.3s ease, color 0.3s ease;
   }
+
+  #root {
+    @apply w-full overflow-x-hidden;
+  }
+
+
 
   [dir="rtl"] body {
     font-family: var(--font-hebrew);

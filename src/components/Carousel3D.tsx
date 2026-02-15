@@ -1,318 +1,227 @@
-import React, { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import React, { useRef, useEffect, useState, useMemo } from "react";
+import gsap from "gsap";
 
 interface Carousel3DProps {
   images: string[];
-  onImageClick?: (index: number) => void;
 }
 
-const Carousel3D: React.FC<Carousel3DProps> = ({ images, onImageClick }) => {
+const Carousel3D: React.FC<Carousel3DProps> = ({ images }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-  const imageRefs = useRef<HTMLDivElement[]>([]);
-  const [zoomedIndex, setZoomedIndex] = useState<number | null>(null);
-  const [currentCenterIndex, setCurrentCenterIndex] = useState(0);
-  const [isRotating, setIsRotating] = useState(false);
-  const [showArrows, setShowArrows] = useState(true);
-  const xPosRef = useRef(0);
-  const isDraggingRef = useRef(false);
-  const rotationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Calculate rotation angle for each image (360/6 = 60 degrees)
-  const anglePerImage = 360 / 6;
-  const radius = 250; // Distance from center (reduced for better mobile fit)
+  // --- Configuration ---
+  const CARD_WIDTH_DESKTOP = 600; 
+  // We use functional check for mobile width in the code below instead of a constant
+  const GAP = 30; 
 
-  useEffect(() => {
-    if (!ringRef.current) return;
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
-    // Initialize carousel
-    gsap.set(ringRef.current, {
-      rotationY: 0,
-      cursor: "grab",
-    });
-
-    // Set up each image in 3D space
-    imageRefs.current.forEach((img, i) => {
-      if (!img) return;
-      gsap.set(img, {
-        rotateY: i * -anglePerImage,
-        transformOrigin: `50% 50% ${radius}px`,
-        z: -radius,
-        backfaceVisibility: "hidden",
-      });
-    });
-
-    // Entrance animation
-    gsap.from(imageRefs.current, {
-      duration: 1.5,
-      y: 200,
-      opacity: 0,
-      stagger: 0.1,
-      ease: "expo",
-    });
-
-    // Cleanup
-    return () => {
-      if (rotationTimeoutRef.current) {
-        clearTimeout(rotationTimeoutRef.current);
-      }
-    };
+  // Calculate slots and normalized images
+  // We mirror the images to ensure we have enough to form a circle if count is low
+  const MIN_SLOTS = 8;
+  
+  const displayImages = useMemo(() => {
+    // Filter out empty placeholders from data
+    const validImages = images.filter(img => img && img.length > 0);
+    
+    if (validImages.length === 0) return Array(MIN_SLOTS).fill(""); 
+    
+    // If not enough images, repeat valid ones until we have at least MIN_SLOTS
+    let result = [...validImages];
+    while (result.length < MIN_SLOTS) {
+        result = [...result, ...validImages];
+    }
+    return result;
   }, [images]);
 
-  const handleRotationStart = () => {
-    setIsRotating(true);
-    setShowArrows(false);
-    if (rotationTimeoutRef.current) {
-      clearTimeout(rotationTimeoutRef.current);
-    }
-  };
+  const SLOTS = displayImages.length;
 
-  const handleRotationEnd = () => {
-    if (rotationTimeoutRef.current) {
-      clearTimeout(rotationTimeoutRef.current);
-    }
-    rotationTimeoutRef.current = setTimeout(() => {
-      setIsRotating(false);
-      setShowArrows(true);
-    }, 500);
-  };
-
-  const dragStart = (e: React.MouseEvent | React.TouchEvent) => {
-    if (zoomedIndex !== null) return; // Disable rotation while zoomed
-
-    // Don't prevent default on touch start entirely to allow scrolling if needed, but for carousel we need it
-    // e.preventDefault(); 
-    isDraggingRef.current = false;
-    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
-    xPosRef.current = Math.round(clientX);
-    if (ringRef.current) {
-      gsap.set(ringRef.current, { cursor: "grabbing" });
-    }
-    handleRotationStart();
-    window.addEventListener("mousemove", drag as any);
-    window.addEventListener("touchmove", drag as any);
-    window.addEventListener("mouseup", dragEnd);
-    window.addEventListener("touchend", dragEnd);
-  };
-
-  const drag = (e: MouseEvent | TouchEvent) => {
-    if (!ringRef.current) return;
-    
-    // Prevent scrolling while dragging the carousel
-    if (e.cancelable) e.preventDefault();
-
-    isDraggingRef.current = true;
-    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
-    const delta = Math.round(clientX) - xPosRef.current;
-
-    // Allow continuous rotation
-    gsap.to(ringRef.current, {
-      rotationY: "-=" + (delta * 0.5), // Slower manual rotation for better control
-      duration: 0.3,
-      overwrite: "auto"
-    });
-
-    xPosRef.current = Math.round(clientX);
-  };
-
-  const dragEnd = () => {
-    window.removeEventListener("mousemove", drag as any);
-    window.removeEventListener("touchmove", drag as any);
-    window.removeEventListener("mouseup", dragEnd);
-    window.removeEventListener("touchend", dragEnd);
-    if (ringRef.current) {
-      gsap.set(ringRef.current, { cursor: "grab" });
-    }
-    
-    // Auto Snap to nearest image
-    if (isDraggingRef.current && ringRef.current) {
-      const currentRotation = gsap.getProperty(ringRef.current, "rotationY") as number;
-      
-      // Calculate minimal snapped rotation
-      const snapAngle = Math.round(currentRotation / anglePerImage) * anglePerImage;
-      
-      // Animate to snap point
-      gsap.to(ringRef.current, {
-        rotationY: snapAngle,
-        duration: 0.5,
-        ease: "power2.out",
-        onComplete: handleRotationEnd
-      });
-
-      // Update current index based on snap angle
-      // Normalize angle to 0-360 range for index calculation
-      let normalizedAngle = -snapAngle % 360;
-      if (normalizedAngle < 0) normalizedAngle += 360;
-      
-      const newIndex = Math.round(normalizedAngle / anglePerImage) % 6;
-      setCurrentCenterIndex(newIndex);
-    } else {
-        handleRotationEnd();
-    }
-    
-    // Reset dragging flag after a small delay to prevent click from firing
-    setTimeout(() => {
-      isDraggingRef.current = false;
-    }, 100);
-  };
-
-  const handleImageClick = (index: number, imgSrc: string) => {
-    // Ignore clicks on placeholder images or if user was dragging
-    if (!imgSrc || isDraggingRef.current) return;
-
-    if (zoomedIndex === index) {
-      // Unzoom backwards
-      setZoomedIndex(null);
-      gsap.to(imageRefs.current[index], {
-        z: -radius,
-        scale: 1,
-        duration: 0.5,
-        ease: "power2.inOut",
-      });
-    } else {
-      // Zoom In
-      if (!ringRef.current) return;
-      
-      // Get current rotation state
-      const currentRotation = gsap.getProperty(ringRef.current, "rotationY") as number;
-      
-      // Calculate target ring rotation to bring this image to front (0deg world space)
-      // Image `index` is at `index * -60` degrees inside ring.
-      // To bring it to 0, ring must rotate to `index * 60`.
-      // We want to move to the closest multiple of 360.
-      
-      const targetBaseRotation = index * anglePerImage; // e.g., index 1 (at -60) needs +60 ring rot
-      
-      // Find the multiple of 360 closest to currentRotation that aligns with targetBaseRotation
-      // Formula: target = targetBase + 360 * round((current - targetBase) / 360)
-      const targetRotation = targetBaseRotation + 360 * Math.round((currentRotation - targetBaseRotation) / 360);
-      
-      // Animate: Center first, then Zoom
-      gsap.to(ringRef.current, {
-        rotationY: targetRotation,
-        duration: 0.5,
-        ease: "power2.inOut",
-        onComplete: () => {
-          setCurrentCenterIndex(index);
-          // Only after centering, zoom in
-          
-           // Return any other zoomed image
-           if (zoomedIndex !== null && zoomedIndex !== index) {
-            gsap.to(imageRefs.current[zoomedIndex], {
-              z: -radius,
-              scale: 1,
-              duration: 0.3,
-              ease: "power2.inOut",
-            });
-          }
-          
-          setZoomedIndex(index);
-          gsap.to(imageRefs.current[index], {
-            z: 100, // Move forward
-            scale: 1.5,
-            duration: 0.4,
-            ease: "power2.inOut",
-          });
-        },
-      });
-    }
-  };
-
-  const rotateCarousel = (direction: "left" | "right") => {
-    if (!ringRef.current || zoomedIndex !== null) return;
-
-    handleRotationStart();
-    const rotation = direction === "left" ? anglePerImage : -anglePerImage;
-    
-    // Update current center index
-    const newIndex = direction === "left" 
-      ? (currentCenterIndex - 1 + 6) % 6 
-      : (currentCenterIndex + 1) % 6;
-    setCurrentCenterIndex(newIndex);
-
-    gsap.to(ringRef.current, {
-      rotationY: "+=" + rotation,
-      duration: 0.8,
-      ease: "power2.inOut",
-      onComplete: handleRotationEnd,
-    });
-  };
-
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeydown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") {
-        rotateCarousel("left");
-      } else if (e.key === "ArrowRight") {
-        rotateCarousel("right");
-      }
+    // Radius Calc
+    const getRadius = (fovWidth: number, count: number) => {
+        // C = N * W. r = C / 2pi.
+        // For "Inside" view (Panoramic), we want the radius to be large enough 
+        // that the user feels they are in the center.
+        // Use Polygon apothem formula: r = w / (2 * tan(pi/N))
+        const w = fovWidth + GAP;
+        const r = w / (2 * Math.tan(Math.PI / count));
+        // Push slightly further out to avoid "too close" feeling on near plane clips
+        return Math.round(r);
     };
+  
+  const cardW = dimensions.width < 768 ? Math.min(350, dimensions.width * 0.8) : CARD_WIDTH_DESKTOP;
+  const radius = useMemo(() => getRadius(cardW, SLOTS), [cardW, SLOTS, dimensions.width]);
 
-    window.addEventListener("keydown", handleKeydown);
-    return () => window.removeEventListener("keydown", handleKeydown);
-  }, [zoomedIndex]);
+  // -- Interaction State --
+  const state = useRef({
+      rotation: 0,
+      isDragging: false,
+      startX: 0,
+      startRotation: 0,
+      velocity: 0,
+      lastX: 0,
+      lastTime: 0
+  });
+
+  // Init & Resize
+  useEffect(() => {
+    // Force initial dimension
+    setDimensions({ width: window.innerWidth, height: window.innerHeight });
+    
+    const onResize = () => setDimensions({ width: window.innerWidth, height: window.innerHeight });
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  // Main Loop for Inertia and Transform application
+  useEffect(() => {
+    const ring = ringRef.current;
+    if (!ring) return;
+
+    let rafId: number;
+    
+    // Position Cards Once (or on radius change)
+    const cards = ring.children;
+    Array.from(cards).forEach((card, i) => {
+       const angle = i * (360 / SLOTS);
+       
+       // "From Inside" Logic:
+       // 1. rotateY(angle): Position around the ring
+       // 2. translateZ(radius): Push out to wall distance
+       // 3. rotateY(180deg): Face INWARD to the viewer at center
+       
+       gsap.set(card, {
+           transform: `rotateY(${angle}deg) translateZ(${radius}px) rotateY(180deg)`,
+           display: "block",
+           backfaceVisibility: "hidden",
+           WebkitBackfaceVisibility: "hidden", 
+       });
+    });
+
+    const update = () => {
+      const s = state.current;
+      
+      // Apply momentum if not dragging
+      if (!s.isDragging) {
+         if (Math.abs(s.velocity) > 0.01) {
+             s.rotation += s.velocity;
+             s.velocity *= 0.95; // Friction
+         } else {
+             s.velocity = 0;
+         }
+      }
+      
+      // Apply to Ring
+      // In panoramic inside view: 
+      // If I drag LEFT (finger -> left), I expect the wall to move LEFT.
+      // This corresponds to NEGATIVE rotationY (Counter Clockwise from top).
+      gsap.set(ring, { rotationY: s.rotation });
+      
+      rafId = requestAnimationFrame(update);
+    };
+    update();
+    
+    return () => cancelAnimationFrame(rafId);
+  }, [radius, SLOTS, displayImages]); // Re-run if geometry changes
+
+  // Event Handlers
+  const onPointerDown = (e: React.PointerEvent | React.TouchEvent) => {
+     const s = state.current;
+     s.isDragging = true;
+     // Unified pointer x
+     const x = 'touches' in e ? e.touches[0].clientX : (e as React.PointerEvent).clientX;
+     s.startX = x;
+     s.lastX = x;
+     s.startRotation = s.rotation;
+     s.lastTime = performance.now();
+     s.velocity = 0;
+     
+     if (containerRef.current) containerRef.current.style.cursor = "grabbing";
+  };
+
+  const onPointerMove = (e: React.PointerEvent | React.TouchEvent) => {
+     const s = state.current;
+     if (!s.isDragging) return;
+     
+     const x = 'touches' in e ? e.touches[0].clientX : (e as React.PointerEvent).clientX;
+     const dx = x - s.startX;
+     
+     // Sensitivity
+     // 1px drag = X degrees rotation.
+     // For immersive, slow is better.
+     const sensitivity = 0.15; 
+     
+     // Direct control: Drag Left (dx < 0) -> Wall moves Left -> Right side appears -> Rotation Increases.
+     // So we subtract dx (minus negative = positive).
+     
+     s.rotation = s.startRotation - (dx * sensitivity);
+     
+     // Velocity calc
+     const now = performance.now();
+     const dt = now - s.lastTime;
+     if (dt > 0) {
+         const moveX = x - s.lastX;
+         s.velocity = -(moveX * sensitivity); // Inverted velocity
+         s.lastX = x;
+         s.lastTime = now;
+     }
+  };
+
+  const onPointerUp = () => {
+     state.current.isDragging = false;
+     if (containerRef.current) containerRef.current.style.cursor = "grab";
+  };
 
   return (
-    <div className="relative w-full h-[600px] md:h-[600px] overflow-hidden">
-      <div
+    <div 
         ref={containerRef}
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[480px] md:w-[400px] md:h-[500px]"
-        style={{ perspective: "2000px", isolation: "isolate" }}
-      >
-        <div
-          ref={ringRef}
-          className="w-full h-full relative"
-          style={{ transformStyle: "preserve-3d" }}
-          onMouseDown={dragStart}
-          onTouchStart={dragStart}
+        className="w-full h-[500px] md:h-screen max-h-[900px] relative overflow-hidden bg-transparent flex items-center justify-center cursor-grab active:cursor-grabbing touch-none perspective-container"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerLeave={onPointerUp}
+        onTouchStart={onPointerDown}
+        onTouchMove={onPointerMove}
+        onTouchEnd={onPointerUp}
+        style={{ perspective: "1200px" }} // Deep perspective for immersion
+    >
+        {/** The World (Rotates) */}
+        <div 
+            ref={ringRef}
+            className="absolute top-1/2 left-1/2 w-0 h-0 transform-style-3d"
+            style={{ 
+                transformStyle: "preserve-3d",
+                // Push the floor down slightly if needed or center strictly
+            }}
         >
-          {images.map((imgSrc, index) => (
-            <div
-              key={index}
-              ref={(el) => {
-                if (el) imageRefs.current[index] = el;
-              }}
-              className="absolute w-full h-full cursor-pointer touch-none"
-              style={{ transformStyle: "preserve-3d" }}
-              onClick={() => handleImageClick(index, imgSrc)}
-            >
-              {imgSrc ? (
-                <img
-                  src={imgSrc}
-                  alt={`Gallery ${index + 1}`}
-                  className="w-full h-full object-cover rounded-lg shadow-2xl"
-                  draggable={false}
-                />
-              ) : (
-                <div className="w-full h-full bg-muted border-2 border-dashed border-border rounded-lg flex items-center justify-center">
-                  <span className="text-muted-foreground text-sm">Coming Soon</span>
+            {displayImages.map((src, i) => (
+                <div 
+                    key={i} 
+                    className="absolute top-0 left-0"
+                    style={{
+                        width: cardW,
+                        height: cardW * 1.6, 
+                        marginLeft: -cardW/2,
+                        marginTop: -(cardW * 1.6)/2,
+                        backfaceVisibility: "hidden", 
+                        WebkitBackfaceVisibility: "hidden",
+                        // Note: GSAP sets the transforms: rotateY, translateZ, rotateY(180)
+                    }}
+                >
+                    <div className="w-full h-full relative group overflow-hidden rounded-md shadow-2xl bg-transparent mx-auto">
+                        <img 
+                            src={src} 
+                            alt="" 
+                            className="w-full h-full object-cover pointer-events-none select-none"
+                            draggable={false}
+                        />
+                         {/* Shine / Reflection */}
+                         <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-50 pointer-events-none" />
+                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
+                    </div>
                 </div>
-              )}
-            </div>
-          ))}
+            ))}
         </div>
-      </div>
-
-      {/* Navigation Arrows */}
-      {showArrows && !isRotating && zoomedIndex === null && (
-        <>
-          <button
-            onClick={() => rotateCarousel("left")}
-            className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background border border-border rounded-full p-3 backdrop-blur-sm transition-all hover:scale-110 z-10"
-            aria-label="Previous image"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-          <button
-            onClick={() => rotateCarousel("right")}
-            className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background border border-border rounded-full p-3 backdrop-blur-sm transition-all hover:scale-110 z-10"
-            aria-label="Next image"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
-        </>
-      )}
+        
     </div>
   );
 };

@@ -18,7 +18,7 @@ const HeroSection = () => {
   const scale = 1 + scrollY * 0.0003;
 
   return (
-    <section id="hero" className="sticky top-0 h-screen overflow-hidden">
+    <section id="hero" className="sticky top-0 left-0 w-full h-screen overflow-hidden">
       {/* Background Video */}
       <div 
         className="absolute inset-0 w-full h-full transition-none origin-center"
@@ -47,10 +47,7 @@ const HeroSection = () => {
         className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6"
         style={{ opacity }}
       >
-        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-background mb-4 drop-shadow-lg">
-          {t(translations.hero.name)}
-        </h1>
-        <p className="font-body text-lg md:text-xl text-background/80 max-w-xl drop-shadow-md">
+        <p className="font-body text-xl md:text-2xl text-background/80 max-w-xl drop-shadow-md">
           {t(translations.hero.tagline)}
         </p>
         <div className="mt-10 animate-bounce">

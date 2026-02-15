@@ -45,7 +45,7 @@ const BiographySection = () => {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="md:w-3/5"
           >
-            <p className="text-lg md:text-xl leading-relaxed text-muted-foreground">
+            <p className="text-lg md:text-xl leading-relaxed text-muted-foreground whitespace-pre-line">
               {t(translations.bio.text)}
             </p>
           </motion.div>
