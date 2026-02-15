@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translations } from "@/data/i18n";
 import heroBg from "@/assets/hero-bg.jpg";
 import heroVideo from "@/assets/BackVid-720.mp4";
+import { Volume2, VolumeX } from "lucide-react";
 
 const HeroSection = () => {
   const { t } = useLanguage();
   const [scrollY, setScrollY] = useState(0);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -28,8 +31,9 @@ const HeroSection = () => {
         }}
       >
         <video
+          ref={videoRef}
           autoPlay
-          muted
+          muted={isMuted}
           loop
           playsInline
           poster={heroBg}
@@ -41,6 +45,21 @@ const HeroSection = () => {
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-hero-overlay/30" style={{ opacity }} />
+
+      {/* Sound Control */}
+      <button
+        onClick={() => {
+          if (videoRef.current) {
+            videoRef.current.muted = !videoRef.current.muted;
+            setIsMuted(!isMuted);
+          }
+        }}
+        className="absolute bottom-10 left-6 z-20 p-3 rounded-full bg-black/20 hover:bg-black/40 text-white transition-colors backdrop-blur-sm"
+        aria-label={isMuted ? "Unmute video" : "Mute video"}
+        style={{ opacity }}
+      >
+        {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
+      </button>
 
       {/* Content */}
       <div
