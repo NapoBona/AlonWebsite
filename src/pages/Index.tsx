@@ -23,7 +23,7 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="relative z-10 py-8 text-center text-sm text-muted-foreground border-t border-border/30 bg-background">
-        © {new Date().getFullYear()} Artist Name
+        © {new Date().getFullYear()} Alon Yaacoby
       </footer>
     </div>
   );
