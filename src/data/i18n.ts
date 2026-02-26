@@ -14,17 +14,19 @@ export const translations = {
   },
   bio: {
     title: { he: "על האמן", en: "Biography" },
-    text: {
-      he: `אלון יהודה דב יעקבי, מוסיקאי ונגן פאנטם שחוקר את הצלילים ואת השקט שביניהם.
-
-לפני 10 שנים התחיל המסע בעולם הצלילים המרפאים, כאשר יחד עם הפאנטמים, כלים מדיטטיביים נוספים, הקשבה למרחב והנגשת הצלילים ורפואת המוסיקה מנגן ומנחה מרחבי מסעות צלילים, מנגן באירועים ומלווה סדנאות וריטריטים.
+    intro: {
+      he: "אלון יהודה דב יעקבי, מוסיקאי ונגן פאנטם שחוקר את הצלילים ואת השקט שביניהם.",
+      en: "A multidisciplinary musical artist blending traditional sounds with contemporary music.",
+    },
+    description: {
+      he: `לפני 10 שנים התחיל המסע בעולם הצלילים המרפאים, כאשר יחד עם הפאנטמים, כלים מדיטטיביים נוספים, הקשבה למרחב והנגשת הצלילים ורפואת המוסיקה מנגן ומנחה מרחבי מסעות צלילים, מנגן באירועים ומלווה סדנאות וריטריטים.
 
 יחד עם הצלילים והמרחב שנוצר, ניתן להגיע למקום, המאפשר ביטוי של העולם הרגשי, ולהתחבר למה שהכי חי בלב ובנשמה.
 לתת למחשבות מנוחה ולאפשר לעצמנו, רגע להרפות ורק להרגיש, להתענג על אדוות המסע ולהגיע לתובנות מרגשות.
 
 לנשום עמוק,
 להיות בנוכחות.`,
-      en: "A multidisciplinary musical artist blending traditional sounds with contemporary music. For over a decade, creating unique musical experiences that connect cultures and traditions. From drumming workshops in the desert to performances on international stages, the music touches souls and inspires.",
+      en: "For over a decade, creating unique musical experiences that connect cultures and traditions. From drumming workshops in the desert to performances on international stages, the music touches souls and inspires.",
     },
   },
   gallery: {
