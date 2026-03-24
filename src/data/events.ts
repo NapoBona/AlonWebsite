@@ -1,4 +1,62 @@
+import mihmoretImage from '../assets/Events/Mihmoret.1.4.jpeg';
+
 export const events = [
+  {
+    date: "2026-04-01",
+    name: {
+      he: "מכניסים אביב",
+      en: "Welcoming Spring"
+    },
+    subtitle: {
+      he: "דרך יוגה וצלילים מרפאים",
+      en: "Through Yoga and Healing Sounds"
+    },
+    location: "מכמורת",
+    locationLink: "https://maps.app.goo.gl/VqxHBRWVhJxHcAvz5?g_st=awb",
+    description: {
+      he: `מוזמנים ומוזמנות להצטרף אלינו לקבל את חג פסח בדרך קצת אחרת,
+דרך תרגול יוגה רך ותומך אל תוך שוואסנה ומנוחה.
+כשלאחריה ניכנס לסדנאת סאונד הילינג וצלילים מרפאים בשילוב פאנטמים וכלים מכל העולם.
+
+יש עגלת קפה, ממ"ד צמוד ואוויר הים.
+
+בבוקר של ליל הסדר,
+יום רביעי, 1.4
+10:00-12:30
+"סטודיו יוגה מאלה"
+מכמורת
+
+מחיר 140₪
+מחיר לזוג 250₪`,
+      en: `Welcoming Spring,
+Through Yoga and Healing Sounds.
+
+Invited to join us to welcome Passover in a slightly different way,
+through soft and supportive yoga practice into Savasana and rest.
+Followed by a sound healing workshop and healing sounds combining Pantams and instruments from around the world.
+
+There is a coffee cart, an adjacent shelter, and sea air.
+
+Morning of Seder Night,
+Wednesday, April 1st
+10:00-12:30
+"Mala Yoga Studio"
+Michmoret
+
+Price 140₪
+Price for couple 250₪`
+    },
+    longDescription: {
+      he: "",
+      en: ""
+    },
+    whatsappMessage: {
+      he: "היי, אשמח לפרטים נוספים על אירוע יוגה וצלילים מרפאים במכמורת (פסח)",
+      en: "Hi, I'd like more details about the Yoga and Healing Sounds event in Michmoret (Passover)"
+    },
+    link: "#",
+    image: mihmoretImage
+  },
   {
     date: "2026-03-06",
     name: { he: "יוגה וצלילים מרפאים - מכניסים שבת", en: "Yoga and Healing Sounds - Welcoming Shabbat" },
