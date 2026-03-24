@@ -18,9 +18,15 @@ export const events = [
 דרך תרגול יוגה רך ותומך אל תוך שוואסנה ומנוחה.
 כשלאחריה ניכנס לסדנאת סאונד הילינג וצלילים מרפאים בשילוב פאנטמים וכלים מכל העולם.
 
-יש עגלת קפה, ממ"ד צמוד ואוויר הים.
+יש עגלת קפה, ממ"ד צמוד ואוויר הים.`,
+      en: `Invited to join us to welcome Passover in a slightly different way,
+through soft and supportive yoga practice into Savasana and rest.
+Followed by a sound healing workshop and healing sounds combining Pantams and instruments from around the world.
 
-בבוקר של ליל הסדר,
+There is a coffee cart, an adjacent shelter, and sea air.`
+    },
+    details: {
+      he: `בבוקר של ליל הסדר,
 יום רביעי, 1.4
 10:00-12:30
 "סטודיו יוגה מאלה"
@@ -28,16 +34,7 @@ export const events = [
 
 מחיר 140₪
 מחיר לזוג 250₪`,
-      en: `Welcoming Spring,
-Through Yoga and Healing Sounds.
-
-Invited to join us to welcome Passover in a slightly different way,
-through soft and supportive yoga practice into Savasana and rest.
-Followed by a sound healing workshop and healing sounds combining Pantams and instruments from around the world.
-
-There is a coffee cart, an adjacent shelter, and sea air.
-
-Morning of Seder Night,
+      en: `Morning of Seder Night,
 Wednesday, April 1st
 10:00-12:30
 "Mala Yoga Studio"
@@ -56,6 +53,44 @@ Price for couple 250₪`
     },
     link: "#",
     image: mihmoretImage
+  },
+  {
+    date: "2026-05-15",
+    name: {
+      he: "ניגון פאנטם אלקטרוני",
+      en: "Electronic Pantam Performance"
+    },
+    location: "עולש",
+    locationLink: "https://maps.app.goo.gl/KKWdqtUDNX3YMRqz5",
+    description: {
+      he: `הופעת פאנטם ייחודית, בשילוב צלילים מכל העולם.
+
+בתאריך 15.5, יום שישי.
+רגע לפני שבועות, במיקום פסטורלי.
+מתאים למשפחות, יש אפשרות להישאר לפיקניק.
+
+
+פרטים נוספים בקרוב,
+מוזמנים ליצור קשר`,
+      en: `A unique Pantam performance, combining sounds from around the world.
+
+On May 15th, Friday.
+Just before Shavuot, in a pastoral location.
+Suitable for families, with the option to stay for a picnic.
+
+
+More details coming soon,
+feel free to get in touch`
+    },
+    longDescription: {
+      he: "",
+      en: ""
+    },
+    whatsappMessage: {
+      he: "היי, אשמח לפרטים נוספים על הופעת פאנטם אלקטרוני בעולש",
+      en: "Hi, I'd like more details about the Electronic Pantam Performance in Olesh"
+    },
+    link: "#",
   },
   {
     date: "2026-03-06",

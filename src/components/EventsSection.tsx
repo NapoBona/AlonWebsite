@@ -14,7 +14,7 @@ interface EventCardProps {
 }
 
 const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
-    const { t } = useLanguage();
+    const { lang, t } = useLanguage();
     const [isExpanded, setIsExpanded] = useState(false);
     const [showLightbox, setShowLightbox] = useState(false);
 
@@ -71,28 +71,35 @@ const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
                             className="overflow-hidden"
                         >
                             <div className="pt-4 border-t border-white/10 space-y-4">
+                                {/* Main description - full width */}
                                 <p className="text-muted-foreground text-sm whitespace-pre-line">
                                     {t(event.description)}
                                 </p>
-                                {(event as any).image && (
-                                    <div 
-                                        className="w-32 h-32 cursor-pointer rounded-md overflow-hidden relative shadow-sm border border-white/10"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setShowLightbox(true);
-                                        }}
-                                    >
-                                        <img 
-                                            src={(event as any).image} 
-                                            alt="Event" 
-                                            className="w-full h-full object-cover transition-transform hover:scale-110" 
-                                        />
+
+                                {/* Details + Image side by side */}
+                                {((event as any).details || (event as any).image) && (
+                                    <div className="flex gap-4 items-start">
+                                        {(event as any).details && (
+                                            <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line flex-1">
+                                                {t((event as any).details)}
+                                            </p>
+                                        )}
+                                        {(event as any).image && (
+                                            <div 
+                                                className="w-32 h-40 flex-shrink-0 cursor-pointer rounded-md overflow-hidden relative shadow-sm border border-white/10"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setShowLightbox(true);
+                                                }}
+                                            >
+                                                <img 
+                                                    src={(event as any).image} 
+                                                    alt="Event" 
+                                                    className="w-full h-full object-cover transition-transform hover:scale-110" 
+                                                />
+                                            </div>
+                                        )}
                                     </div>
-                                )}
-                                {event.longDescription && t(event.longDescription) && (
-                                    <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">
-                                        {t(event.longDescription)} 
-                                    </p>
                                 )}
                         
                                 <div className="flex flex-wrap gap-3 pt-2">
