@@ -60,21 +60,21 @@ Price for couple 250₪`
       he: "ניגון פאנטם אלקטרוני",
       en: "Electronic Pantam Performance"
     },
+    subtitle: {
+      he: "הופעת פאנטם ייחודית, בשילוב צלילים מכל העולם.",
+      en: "A unique Pantam performance, combining sounds from around the world."
+    },
     location: "עולש",
     locationLink: "https://maps.app.goo.gl/KKWdqtUDNX3YMRqz5",
     description: {
-      he: `הופעת פאנטם ייחודית, בשילוב צלילים מכל העולם.
-
-בתאריך 15.5, יום שישי.
+      he: `בתאריך 15.5, יום שישי.
 רגע לפני שבועות, במיקום פסטורלי.
 מתאים למשפחות, יש אפשרות להישאר לפיקניק.
 
 
 פרטים נוספים בקרוב,
 מוזמנים ליצור קשר`,
-      en: `A unique Pantam performance, combining sounds from around the world.
-
-On May 15th, Friday.
+      en: `On May 15th, Friday.
 Just before Shavuot, in a pastoral location.
 Suitable for families, with the option to stay for a picnic.
 
