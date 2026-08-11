@@ -240,7 +240,9 @@ const EventsSection = () => {
   });
 
   const now = new Date();
-  const upcomingEvents = events.filter((e) => new Date(e.date) >= now);
+  const upcomingEvents = events
+    .filter((e) => new Date(e.date) >= now)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
