@@ -58,7 +58,9 @@ const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
 
     // Use translation helper 't' for localized whatsapp message
     // Assuming event.whatsappMessage is now an object {he: string, en: string}
-    const waLink = `https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(t(event.whatsappMessage))}`;
+    const waLink = event.whatsappMessage
+        ? `https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(t(event.whatsappMessage))}`
+        : null;
 
     return (
         <>
@@ -85,18 +87,20 @@ const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
                     </p>
                 )}
                 
-                <div 
-                    className="flex items-center gap-2 text-muted-foreground mb-3 cursor-pointer hover:text-primary transition-colors"
-                    onClick={(e) => {
-                        if (event.locationLink) {
-                            e.stopPropagation();
-                            window.open(event.locationLink, '_blank');
-                        }
-                    }}
-                >
-                    <MapPin size={14} />
-                    <span className={`text-sm ${event.locationLink ? 'underline' : ''}`}>{event.location}</span>
-                </div>
+                {event.location && (
+                    <div 
+                        className="flex items-center gap-2 text-muted-foreground mb-3 cursor-pointer hover:text-primary transition-colors"
+                        onClick={(e) => {
+                            if (event.locationLink) {
+                                e.stopPropagation();
+                                window.open(event.locationLink, '_blank');
+                            }
+                        }}
+                    >
+                        <MapPin size={14} />
+                        <span className={`text-sm ${event.locationLink ? 'underline' : ''}`}>{event.location}</span>
+                    </div>
+                )}
 
                 {/* Expandable Content */}
                 <AnimatePresence>
@@ -142,17 +146,19 @@ const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
                         
                                 <div className="flex flex-wrap gap-3 pt-2">
                                     {/* WhatsApp Action */}
-                                    <Button 
-                                        size="sm" 
-                                        className="bg-[#25D366] hover:bg-[#128C7E] text-white gap-2"
-                                        onClick={(e) => {
-                                            e.stopPropagation(); // prevent collapsing
-                                            window.open(waLink, '_blank');
-                                        }}
-                                    >
-                                        <MessageCircle size={16} />
-                                        WhatsApp
-                                    </Button>
+                                    {waLink && (
+                                        <Button 
+                                            size="sm" 
+                                            className="bg-[#25D366] hover:bg-[#128C7E] text-white gap-2"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // prevent collapsing
+                                                window.open(waLink, '_blank');
+                                            }}
+                                        >
+                                            <MessageCircle size={16} />
+                                            WhatsApp
+                                        </Button>
+                                    )}
 
                                     {/* External Link if Valid */}
                                     {event.link && event.link !== "#" && (

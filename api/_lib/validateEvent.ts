@@ -25,14 +25,18 @@ export function validateEvent(body: any): string | null {
   if (!isLocalizedText(body.name) || !body.name.he.trim() || !body.name.en.trim()) {
     return "Invalid or missing name (he/en)";
   }
-  if (typeof body.location !== "string" || !body.location.trim()) {
-    return "Invalid or missing location";
+  if (body.location !== undefined && body.location !== null && typeof body.location !== "string") {
+    return "Invalid location";
   }
   if (!isLocalizedText(body.description) || !body.description.he.trim() || !body.description.en.trim()) {
     return "Invalid or missing description (he/en)";
   }
-  if (!isLocalizedText(body.whatsappMessage) || !body.whatsappMessage.he.trim() || !body.whatsappMessage.en.trim()) {
-    return "Invalid or missing whatsappMessage (he/en)";
+  if (
+    body.whatsappMessage !== undefined &&
+    body.whatsappMessage !== null &&
+    (!isLocalizedText(body.whatsappMessage) || !body.whatsappMessage.he.trim() || !body.whatsappMessage.en.trim())
+  ) {
+    return "Invalid whatsappMessage (he/en)";
   }
   if (body.subtitle !== undefined && body.subtitle !== null && !isLocalizedText(body.subtitle)) {
     return "Invalid subtitle";
@@ -58,12 +62,12 @@ export function normalizeEvent(body: any): NewEventInput {
     date: body.date,
     name: body.name,
     subtitle: body.subtitle || undefined,
-    location: body.location,
+    location: body.location || undefined,
     locationLink: body.locationLink || undefined,
     description: body.description,
     details: body.details || undefined,
     longDescription: isLocalizedText(body.longDescription) ? body.longDescription : { he: "", en: "" },
-    whatsappMessage: body.whatsappMessage,
+    whatsappMessage: isLocalizedText(body.whatsappMessage) ? body.whatsappMessage : undefined,
     link: body.link || "#",
     image: body.image || undefined,
   };

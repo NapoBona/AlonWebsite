@@ -8,12 +8,12 @@ export interface EventItem {
   date: string;
   name: LocalizedText;
   subtitle?: LocalizedText;
-  location: string;
+  location?: string;
   locationLink?: string;
   description: LocalizedText;
   details?: LocalizedText;
   longDescription: LocalizedText;
-  whatsappMessage: LocalizedText;
+  whatsappMessage?: LocalizedText;
   link: string;
   image?: string;
 }

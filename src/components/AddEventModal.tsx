@@ -73,11 +73,14 @@ const AddEventModal = () => {
     const event: NewEventInput = {
       date: form.date,
       name: { he: form.nameHe, en: form.nameEn },
-      location: form.location,
+      location: form.location.trim() || undefined,
       locationLink: form.locationLink || undefined,
       description: { he: form.descriptionHe, en: form.descriptionEn },
       longDescription: { he: "", en: "" },
-      whatsappMessage: { he: form.whatsappHe, en: form.whatsappEn },
+      whatsappMessage:
+        form.whatsappHe.trim() && form.whatsappEn.trim()
+          ? { he: form.whatsappHe, en: form.whatsappEn }
+          : undefined,
       link: "#",
       image: form.image || undefined,
     };
@@ -113,8 +116,11 @@ const AddEventModal = () => {
     toast({ variant: "destructive", description: t(translations.admin.genericError) });
   };
 
+  const whatsappFilled = form.whatsappHe.trim() || form.whatsappEn.trim();
+  const isWhatsappValid = !whatsappFilled || (form.whatsappHe.trim() && form.whatsappEn.trim());
+
   const isFormValid =
-    form.date && form.nameHe && form.nameEn && form.location && form.descriptionHe && form.descriptionEn && form.whatsappHe && form.whatsappEn;
+    form.date && form.nameHe && form.nameEn && form.descriptionHe && form.descriptionEn && isWhatsappValid;
 
   return (
     <Dialog
