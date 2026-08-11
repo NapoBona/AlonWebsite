@@ -1,4 +1,4 @@
-import type { NewEventInput } from "./types";
+import type { NewEventInput } from "./types.js";
 
 function isLocalizedText(value: any): boolean {
   return (

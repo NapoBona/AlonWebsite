@@ -1,4 +1,4 @@
-import { redis } from "./redis";
+import { redis } from "./redis.js";
 
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_SECONDS = 5 * 60; // 5 minutes

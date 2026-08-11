@@ -1,7 +1,7 @@
-import { redis, EVENTS_KEY } from "../_lib/redis";
-import { isRateLimited, recordFailedAttempt, resetAttempts } from "../_lib/rateLimit";
-import { getClientIp } from "../_lib/ip";
-import type { EventItem } from "../_lib/types";
+import { redis, EVENTS_KEY } from "../_lib/redis.js";
+import { isRateLimited, recordFailedAttempt, resetAttempts } from "../_lib/rateLimit.js";
+import { getClientIp } from "../_lib/ip.js";
+import type { EventItem } from "../_lib/types.js";
 
 export default async function handler(req: any, res: any) {
   if (req.method !== "DELETE") {

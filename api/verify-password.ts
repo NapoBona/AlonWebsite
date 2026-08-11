@@ -1,5 +1,5 @@
-import { isRateLimited, recordFailedAttempt, resetAttempts } from "./_lib/rateLimit";
-import { getClientIp } from "./_lib/ip";
+import { isRateLimited, recordFailedAttempt, resetAttempts } from "./_lib/rateLimit.js";
+import { getClientIp } from "./_lib/ip.js";
 
 /**
  * Lightweight password check used only to reveal the add-event form in the UI.

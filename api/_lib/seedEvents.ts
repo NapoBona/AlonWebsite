@@ -1,4 +1,4 @@
-import type { EventItem } from "./types";
+import type { EventItem } from "./types.js";
 
 // Extracted from the previous hardcoded src/data/events.ts so deploying this
 // feature never makes existing events disappear. Used only to seed Redis
