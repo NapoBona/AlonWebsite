@@ -1,22 +1,60 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAdmin } from "@/contexts/AdminContext";
 import { translations } from "@/data/i18n";
-import { events } from "@/data/events";
+import { fetchEvents, deleteEvent, type EventItem } from "@/lib/eventsApi";
 import { PHONE_NUMBER } from "@/data/socialLinks";
-import { Calendar, MapPin, ExternalLink, ChevronDown, ChevronUp, MessageCircle } from "lucide-react";
+import { Calendar, MapPin, ExternalLink, ChevronDown, ChevronUp, MessageCircle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 import Lightbox from "./Lightbox";
 
 interface EventCardProps {
-    event: typeof events[0];
+    event: EventItem;
     formatDate: (dateStr: string) => string;
 }
 
 const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
     const { lang, t } = useLanguage();
+    const { isAdmin, password } = useAdmin();
+    const { toast } = useToast();
+    const queryClient = useQueryClient();
     const [isExpanded, setIsExpanded] = useState(false);
     const [showLightbox, setShowLightbox] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const handleDelete = async () => {
+        setIsDeleting(true);
+        const { ok, status } = await deleteEvent(password, event.id);
+        setIsDeleting(false);
+        if (ok) {
+            queryClient.invalidateQueries({ queryKey: ["events"] });
+            toast({ description: t(translations.admin.deleteSuccess) });
+            return;
+        }
+        if (status === 401) {
+            toast({ variant: "destructive", description: t(translations.admin.wrongPassword) });
+            return;
+        }
+        if (status === 429) {
+            toast({ variant: "destructive", description: t(translations.admin.tooManyAttempts) });
+            return;
+        }
+        toast({ variant: "destructive", description: t(translations.admin.genericError) });
+    };
 
     // Use translation helper 't' for localized whatsapp message
     // Assuming event.whatsappMessage is now an object {he: string, en: string}
@@ -41,23 +79,23 @@ const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
                 <h3 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-1">
                     {t(event.name)}
                 </h3>
-                {(event as any).subtitle && (
+                {event.subtitle && (
                     <p className="font-display text-base md:text-lg text-foreground/80 mb-3">
-                        {t((event as any).subtitle)}
+                        {t(event.subtitle)}
                     </p>
                 )}
                 
                 <div 
                     className="flex items-center gap-2 text-muted-foreground mb-3 cursor-pointer hover:text-primary transition-colors"
                     onClick={(e) => {
-                        if ((event as any).locationLink) {
+                        if (event.locationLink) {
                             e.stopPropagation();
-                            window.open((event as any).locationLink, '_blank');
+                            window.open(event.locationLink, '_blank');
                         }
                     }}
                 >
                     <MapPin size={14} />
-                    <span className={`text-sm ${(event as any).locationLink ? 'underline' : ''}`}>{event.location}</span>
+                    <span className={`text-sm ${event.locationLink ? 'underline' : ''}`}>{event.location}</span>
                 </div>
 
                 {/* Expandable Content */}
@@ -77,14 +115,14 @@ const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
                                 </p>
 
                                 {/* Details + Image side by side */}
-                                {((event as any).details || (event as any).image) && (
+                                {(event.details || event.image) && (
                                     <div className="flex gap-4 items-start">
-                                        {(event as any).details && (
+                                        {event.details && (
                                             <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line flex-1">
-                                                {t((event as any).details)}
+                                                {t(event.details)}
                                             </p>
                                         )}
-                                        {(event as any).image && (
+                                        {event.image && (
                                             <div 
                                                 className="w-32 h-40 flex-shrink-0 cursor-pointer rounded-md overflow-hidden relative shadow-sm border border-white/10"
                                                 onClick={(e) => {
@@ -93,7 +131,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
                                                 }}
                                             >
                                                 <img 
-                                                    src={(event as any).image} 
+                                                    src={event.image} 
                                                     alt="Event" 
                                                     className="w-full h-full object-cover transition-transform hover:scale-110" 
                                                 />
@@ -131,6 +169,38 @@ const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
                                             <ExternalLink size={14} />
                                         </Button>
                                     )}
+
+                                    {/* Delete Action - only visible once password-gated */}
+                                    {isAdmin && (
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button
+                                                    variant="destructive"
+                                                    size="sm"
+                                                    className="gap-2"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    disabled={isDeleting}
+                                                >
+                                                    <Trash2 size={14} />
+                                                    {t(translations.admin.delete)}
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>{t(translations.admin.deleteConfirmTitle)}</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        {t(translations.admin.deleteConfirmDescription)}
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>{t(translations.admin.cancel)}</AlertDialogCancel>
+                                                    <AlertDialogAction onClick={handleDelete}>
+                                                        {t(translations.admin.delete)}
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    )}
                                 </div>
                             </div>
                         </motion.div>
@@ -143,9 +213,9 @@ const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
                 </div>
             </motion.div>
 
-            {showLightbox && (event as any).image && (
+            {showLightbox && event.image && (
                 <Lightbox 
-                    images={[(event as any).image]} 
+                    images={[event.image]} 
                     currentIndex={0} 
                     onClose={() => setShowLightbox(false)} 
                     onChange={() => {}} 
@@ -157,6 +227,11 @@ const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
 
 const EventsSection = () => {
   const { lang, t } = useLanguage();
+
+  const { data: events = [] } = useQuery({
+    queryKey: ["events"],
+    queryFn: fetchEvents,
+  });
 
   const now = new Date();
   const upcomingEvents = events.filter((e) => new Date(e.date) >= now);
@@ -189,8 +264,8 @@ const EventsSection = () => {
           </p>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {upcomingEvents.map((event, idx) => (
-              <EventCard key={idx} event={event} formatDate={formatDate} />
+            {upcomingEvents.map((event) => (
+              <EventCard key={event.id} event={event} formatDate={formatDate} />
             ))}
           </div>
         )}
