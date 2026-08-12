@@ -57,7 +57,7 @@ const BiographySection = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.7 }}
-              className="md:w-2/5 flex-shrink-0 mx-auto md:mx-0"
+              className="w-full md:w-2/5 flex-shrink-0 mx-auto md:mx-0"
             >
               <div className="relative group">
                 <div className="rounded-2xl shadow-xl w-full max-w-sm mx-auto aspect-[3/4] overflow-hidden relative cursor-pointer">
@@ -70,12 +70,12 @@ const BiographySection = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      transition={{ duration: 0.5 }}
+                      transition={{ duration: 0.3 }}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                     />
                   </AnimatePresence>
                 </div>
-                <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-foreground/10 pointer-events-none" />
+                <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-transparent pointer-events-none" />
               </div>
             </motion.div>
 
