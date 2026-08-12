@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import Lightbox from "./Lightbox";
+import EditEventModal from "./EditEventModal";
 
 interface EventCardProps {
     event: EventItem;
@@ -178,34 +179,37 @@ const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
 
                                     {/* Delete Action - only visible once password-gated */}
                                     {isAdmin && (
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <Button
-                                                    variant="destructive"
-                                                    size="sm"
-                                                    className="gap-2"
-                                                    onClick={(e) => e.stopPropagation()}
-                                                    disabled={isDeleting}
-                                                >
-                                                    <Trash2 size={14} />
-                                                    {t(translations.admin.delete)}
-                                                </Button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent onClick={(e) => e.stopPropagation()}>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>{t(translations.admin.deleteConfirmTitle)}</AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        {t(translations.admin.deleteConfirmDescription)}
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>{t(translations.admin.cancel)}</AlertDialogCancel>
-                                                    <AlertDialogAction onClick={handleDelete}>
+                                        <>
+                                            <EditEventModal event={event} />
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        className="gap-2"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        disabled={isDeleting}
+                                                    >
+                                                        <Trash2 size={14} />
                                                         {t(translations.admin.delete)}
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
+                                                    </Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>{t(translations.admin.deleteConfirmTitle)}</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            {t(translations.admin.deleteConfirmDescription)}
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>{t(translations.admin.cancel)}</AlertDialogCancel>
+                                                        <AlertDialogAction onClick={handleDelete}>
+                                                            {t(translations.admin.delete)}
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                        </>
                                     )}
                                 </div>
                             </div>

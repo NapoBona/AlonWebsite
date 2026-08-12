@@ -1,0 +1,5 @@
+﻿Restored name.en: 
+Restored subtitle.he: 
+Restored location: 
+Restored whatsappMessage.he: 
+Restored details.he length: 0

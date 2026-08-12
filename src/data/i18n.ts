@@ -84,5 +84,9 @@ export const translations = {
     cancel: { he: "ביטול", en: "Cancel" },
     delete: { he: "מחיקה", en: "Delete" },
     deleteSuccess: { he: "האירוע נמחק", en: "Event deleted" },
+    edit: { he: "עריכה", en: "Edit" },
+    editEvent: { he: "עריכת אירוע", en: "Edit Event" },
+    saveChanges: { he: "שמירת שינויים", en: "Save changes" },
+    updateSuccess: { he: "האירוע עודכן בהצלחה", en: "Event updated successfully" },
   },
 } as const;

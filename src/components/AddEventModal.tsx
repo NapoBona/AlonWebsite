@@ -11,26 +11,13 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAdmin } from "@/contexts/AdminContext";
 import { translations } from "@/data/i18n";
-import { addEvent, type NewEventInput } from "@/lib/eventsApi";
-
-const emptyForm = {
-  date: "",
-  nameHe: "",
-  nameEn: "",
-  location: "",
-  locationLink: "",
-  descriptionHe: "",
-  descriptionEn: "",
-  whatsappHe: "",
-  whatsappEn: "",
-  image: "",
-};
+import { addEvent } from "@/lib/eventsApi";
+import EventFormFields, { emptyEventForm, formValuesToNewEventInput, isEventFormValid } from "./EventFormFields";
 
 const AddEventModal = () => {
   const { t } = useLanguage();
@@ -43,14 +30,14 @@ const AddEventModal = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
-  const [form, setForm] = useState(emptyForm);
+  const [form, setForm] = useState(emptyEventForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const resetAndClose = () => {
     setOpen(false);
     setPasswordInput("");
     setPasswordError("");
-    setForm(emptyForm);
+    setForm(emptyEventForm);
   };
 
   const handleUnlock = async () => {
@@ -70,22 +57,7 @@ const AddEventModal = () => {
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    const event: NewEventInput = {
-      date: form.date,
-      name: { he: form.nameHe, en: form.nameEn },
-      location: form.location.trim() || undefined,
-      locationLink: form.locationLink || undefined,
-      description: { he: form.descriptionHe, en: form.descriptionEn },
-      longDescription: { he: "", en: "" },
-      whatsappMessage:
-        form.whatsappHe.trim() && form.whatsappEn.trim()
-          ? { he: form.whatsappHe, en: form.whatsappEn }
-          : undefined,
-      link: "#",
-      image: form.image || undefined,
-    };
-
-    const { ok, status, data } = await addEvent(passwordInput, event);
+    const { ok, status } = await addEvent(passwordInput, formValuesToNewEventInput(form));
     setIsSubmitting(false);
 
     if (ok) {
@@ -171,91 +143,9 @@ const AddEventModal = () => {
               <DialogTitle>{t(translations.admin.addEvent)}</DialogTitle>
               <DialogDescription />
             </DialogHeader>
-            <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
-              <div className="space-y-1">
-                <Label htmlFor="event-date">{t(translations.admin.dateLabel)}</Label>
-                <Input
-                  id="event-date"
-                  type="date"
-                  value={form.date}
-                  onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="event-name-he">{t(translations.admin.nameHeLabel)}</Label>
-                <Input
-                  id="event-name-he"
-                  value={form.nameHe}
-                  onChange={(e) => setForm((f) => ({ ...f, nameHe: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="event-name-en">{t(translations.admin.nameEnLabel)}</Label>
-                <Input
-                  id="event-name-en"
-                  value={form.nameEn}
-                  onChange={(e) => setForm((f) => ({ ...f, nameEn: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="event-location">{t(translations.admin.locationLabel)}</Label>
-                <Input
-                  id="event-location"
-                  value={form.location}
-                  onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="event-location-link">{t(translations.admin.locationLinkLabel)}</Label>
-                <Input
-                  id="event-location-link"
-                  value={form.locationLink}
-                  onChange={(e) => setForm((f) => ({ ...f, locationLink: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="event-description-he">{t(translations.admin.descriptionHeLabel)}</Label>
-                <Textarea
-                  id="event-description-he"
-                  value={form.descriptionHe}
-                  onChange={(e) => setForm((f) => ({ ...f, descriptionHe: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="event-description-en">{t(translations.admin.descriptionEnLabel)}</Label>
-                <Textarea
-                  id="event-description-en"
-                  value={form.descriptionEn}
-                  onChange={(e) => setForm((f) => ({ ...f, descriptionEn: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="event-whatsapp-he">{t(translations.admin.whatsappHeLabel)}</Label>
-                <Textarea
-                  id="event-whatsapp-he"
-                  value={form.whatsappHe}
-                  onChange={(e) => setForm((f) => ({ ...f, whatsappHe: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="event-whatsapp-en">{t(translations.admin.whatsappEnLabel)}</Label>
-                <Textarea
-                  id="event-whatsapp-en"
-                  value={form.whatsappEn}
-                  onChange={(e) => setForm((f) => ({ ...f, whatsappEn: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="event-image">{t(translations.admin.imageLabel)}</Label>
-                <Input
-                  id="event-image"
-                  value={form.image}
-                  onChange={(e) => setForm((f) => ({ ...f, image: e.target.value }))}
-                />
-              </div>
-            </div>
+            <EventFormFields form={form} onChange={setForm} idPrefix="add-event" />
             <DialogFooter>
-              <Button onClick={handleSubmit} disabled={isSubmitting || !isFormValid}>
+              <Button onClick={handleSubmit} disabled={isSubmitting || !isEventFormValid(form)}>
                 {isSubmitting ? t(translations.admin.submitting) : t(translations.admin.submit)}
               </Button>
             </DialogFooter>

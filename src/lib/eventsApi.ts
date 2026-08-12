@@ -75,3 +75,17 @@ export async function deleteEvent(
   const data = await parseJsonSafe(res);
   return { ok: res.ok, status: res.status, data };
 }
+
+export async function updateEvent(
+  password: string,
+  id: string,
+  event: NewEventInput,
+): Promise<ApiResult<{ error?: string } | EventItem[]>> {
+  const res = await fetch(`/api/events/${encodeURIComponent(id)}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password, event }),
+  });
+  const data = await parseJsonSafe(res);
+  return { ok: res.ok, status: res.status, data };
+}

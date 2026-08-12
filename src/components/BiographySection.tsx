@@ -1,11 +1,28 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translations } from "@/data/i18n";
-import artistPortrait from "@/assets/artist-portrait.jpg";
+import artistPortrait01 from "@/assets/artist-portrait01.jpg";
+import artistPortrait02 from "@/assets/artist-portrait02.jpg";
+import artistPortrait03 from "@/assets/artist-portrait03.jpg";
+
+const portraitImages = [artistPortrait01, artistPortrait02, artistPortrait03];
+const ROTATION_INTERVAL_MS = 4000;
 
 const BiographySection = () => {
   const { t } = useLanguage();
+  const [portraitIndex, setPortraitIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPortraitIndex((i) => (i + 1) % portraitImages.length);
+    }, ROTATION_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [portraitIndex]);
+
+  const handlePortraitClick = () => {
+    setPortraitIndex((i) => (i + 1) % portraitImages.length);
+  };
 
   return (
     <section id="bio" className="section-padding bg-background">
@@ -43,11 +60,21 @@ const BiographySection = () => {
               className="md:w-2/5 flex-shrink-0 mx-auto md:mx-0"
             >
               <div className="relative group">
-                <img
-                  src={artistPortrait}
-                  alt="Artist portrait"
-                  className="rounded-2xl shadow-xl w-full max-w-sm mx-auto object-cover aspect-[3/4] transition-transform duration-500 group-hover:scale-[1.02]"
-                />
+                <div className="rounded-2xl shadow-xl w-full max-w-sm mx-auto aspect-[3/4] overflow-hidden relative cursor-pointer">
+                  <AnimatePresence mode="wait">
+                    <motion.img
+                      key={portraitIndex}
+                      src={portraitImages[portraitIndex]}
+                      alt="Artist portrait"
+                      onClick={handlePortraitClick}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                    />
+                  </AnimatePresence>
+                </div>
                 <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-foreground/10 pointer-events-none" />
               </div>
             </motion.div>
