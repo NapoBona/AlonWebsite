@@ -6,7 +6,7 @@ import { useAdmin } from "@/contexts/AdminContext";
 import { translations } from "@/data/i18n";
 import { fetchEvents, deleteEvent, type EventItem } from "@/lib/eventsApi";
 import { PHONE_NUMBER } from "@/data/socialLinks";
-import { Calendar, MapPin, ExternalLink, ChevronDown, ChevronUp, MessageCircle, Trash2 } from "lucide-react";
+import { Calendar, MapPin, ExternalLink, ChevronDown, ChevronUp, MessageCircle, Trash2, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     AlertDialog,
@@ -89,17 +89,36 @@ const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
                 )}
                 
                 {event.location && (
-                    <div 
-                        className="flex items-center gap-2 text-muted-foreground mb-3 cursor-pointer hover:text-primary transition-colors"
-                        onClick={(e) => {
-                            if (event.locationLink) {
-                                e.stopPropagation();
-                                window.open(event.locationLink, '_blank');
-                            }
-                        }}
-                    >
+                    <div className="flex items-center gap-2 text-muted-foreground mb-3">
                         <MapPin size={14} />
-                        <span className={`text-sm ${event.locationLink ? 'underline' : ''}`}>{event.location}</span>
+                        {event.locationLink ? (
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <span
+                                        className="text-sm underline cursor-pointer hover:text-primary transition-colors"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        {event.location}
+                                    </span>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>{t(translations.events.openMapsTitle)}</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            {t(translations.events.openMapsDescription)}
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>{t(translations.admin.cancel)}</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => window.open(event.locationLink, '_blank')}>
+                                            {t(translations.events.openMapsConfirm)}
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        ) : (
+                            <span className="text-sm">{event.location}</span>
+                        )}
                     </div>
                 )}
 
@@ -114,6 +133,14 @@ const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
                             className="overflow-hidden"
                         >
                             <div className="pt-4 border-t border-white/10 space-y-4">
+                                {/* Time - shown first, before description */}
+                                {event.time && (
+                                    <div className="flex items-center gap-2 text-muted-foreground">
+                                        <Clock size={14} />
+                                        <span className="text-sm">{t(event.time)}</span>
+                                    </div>
+                                )}
+
                                 {/* Main description - full width */}
                                 <p className="text-muted-foreground text-sm whitespace-pre-line">
                                     {t(event.description)}
@@ -145,41 +172,50 @@ const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
                                     </div>
                                 )}
                         
-                                <div className="flex flex-wrap gap-3 pt-2">
-                                    {/* WhatsApp Action */}
-                                    {waLink && (
-                                        <Button 
-                                            size="sm" 
-                                            className="bg-[#25D366] hover:bg-[#128C7E] text-white gap-2"
-                                            onClick={(e) => {
-                                                e.stopPropagation(); // prevent collapsing
-                                                window.open(waLink, '_blank');
-                                            }}
-                                        >
-                                            <MessageCircle size={16} />
-                                            WhatsApp
-                                        </Button>
-                                    )}
+                                <div className="flex flex-col gap-3 pt-2">
+                                    <div className="flex flex-wrap items-center gap-3">
+                                        {/* WhatsApp Action */}
+                                        {waLink && (
+                                            <Button 
+                                                size="sm" 
+                                                className="bg-[#25D366] hover:bg-[#128C7E] text-white gap-2"
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); // prevent collapsing
+                                                    window.open(waLink, '_blank');
+                                                }}
+                                            >
+                                                <MessageCircle size={16} />
+                                                WhatsApp
+                                            </Button>
+                                        )}
 
-                                    {/* External Link if Valid */}
-                                    {event.link && event.link !== "#" && (
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="gap-2"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                window.open(event.link, '_blank');
-                                            }}
-                                        >
-                                            {t(translations.events.details)}
-                                            <ExternalLink size={14} />
-                                        </Button>
-                                    )}
+                                        {/* External Link if Valid */}
+                                        {event.link && event.link !== "#" && (
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="gap-2"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    window.open(event.link, '_blank');
+                                                }}
+                                            >
+                                                {t(translations.events.details)}
+                                                <ExternalLink size={14} />
+                                            </Button>
+                                        )}
 
-                                    {/* Delete Action - only visible once password-gated */}
+                                        {/* Price badge */}
+                                        {event.price && (
+                                            <span className="inline-flex items-center rounded-full bg-primary/10 text-primary border border-primary/20 px-3 py-1.5 text-sm font-semibold">
+                                                {t(event.price)}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* Admin actions - only visible once password-gated */}
                                     {isAdmin && (
-                                        <>
+                                        <div className="flex flex-wrap gap-3">
                                             <EditEventModal event={event} />
                                             <AlertDialog>
                                                 <AlertDialogTrigger asChild>
@@ -209,7 +245,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, formatDate }) => {
                                                     </AlertDialogFooter>
                                                 </AlertDialogContent>
                                             </AlertDialog>
-                                        </>
+                                        </div>
                                     )}
                                 </div>
                             </div>

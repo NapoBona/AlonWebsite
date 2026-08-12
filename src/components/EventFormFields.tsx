@@ -12,6 +12,10 @@ export interface EventFormValues {
   nameEn: string;
   location: string;
   locationLink: string;
+  priceHe: string;
+  priceEn: string;
+  timeHe: string;
+  timeEn: string;
   descriptionHe: string;
   descriptionEn: string;
   whatsappHe: string;
@@ -25,12 +29,21 @@ export const emptyEventForm: EventFormValues = {
   nameEn: "",
   location: "",
   locationLink: "",
+  priceHe: "",
+  priceEn: "",
+  timeHe: "",
+  timeEn: "",
   descriptionHe: "",
   descriptionEn: "",
   whatsappHe: "",
   whatsappEn: "",
   image: "",
 };
+
+function isOptionalPairValid(he: string, en: string): boolean {
+  const filled = he.trim() || en.trim();
+  return Boolean(!filled || (he.trim() && en.trim()));
+}
 
 export function eventToFormValues(event: EventItem): EventFormValues {
   return {
@@ -39,6 +52,10 @@ export function eventToFormValues(event: EventItem): EventFormValues {
     nameEn: event.name.en,
     location: event.location ?? "",
     locationLink: event.locationLink ?? "",
+    priceHe: event.price?.he ?? "",
+    priceEn: event.price?.en ?? "",
+    timeHe: event.time?.he ?? "",
+    timeEn: event.time?.en ?? "",
     descriptionHe: event.description.he,
     descriptionEn: event.description.en,
     whatsappHe: event.whatsappMessage?.he ?? "",
@@ -53,6 +70,10 @@ export function formValuesToNewEventInput(form: EventFormValues): NewEventInput 
     name: { he: form.nameHe, en: form.nameEn },
     location: form.location.trim() || undefined,
     locationLink: form.locationLink || undefined,
+    price:
+      form.priceHe.trim() && form.priceEn.trim() ? { he: form.priceHe, en: form.priceEn } : undefined,
+    time:
+      form.timeHe.trim() && form.timeEn.trim() ? { he: form.timeHe, en: form.timeEn } : undefined,
     description: { he: form.descriptionHe, en: form.descriptionEn },
     longDescription: { he: "", en: "" },
     whatsappMessage:
@@ -65,10 +86,18 @@ export function formValuesToNewEventInput(form: EventFormValues): NewEventInput 
 }
 
 export function isEventFormValid(form: EventFormValues): boolean {
-  const whatsappFilled = form.whatsappHe.trim() || form.whatsappEn.trim();
-  const isWhatsappValid = !whatsappFilled || (form.whatsappHe.trim() && form.whatsappEn.trim());
+  const isWhatsappValid = isOptionalPairValid(form.whatsappHe, form.whatsappEn);
+  const isPriceValid = isOptionalPairValid(form.priceHe, form.priceEn);
+  const isTimeValid = isOptionalPairValid(form.timeHe, form.timeEn);
   return Boolean(
-    form.date && form.nameHe && form.nameEn && form.descriptionHe && form.descriptionEn && isWhatsappValid,
+    form.date &&
+      form.nameHe &&
+      form.nameEn &&
+      form.descriptionHe &&
+      form.descriptionEn &&
+      isWhatsappValid &&
+      isPriceValid &&
+      isTimeValid,
   );
 }
 
@@ -123,6 +152,38 @@ const EventFormFields: React.FC<EventFormFieldsProps> = ({ form, onChange, idPre
           id={`${idPrefix}-location-link`}
           value={form.locationLink}
           onChange={(e) => set({ locationLink: e.target.value })}
+        />
+      </div>
+      <div className="space-y-1">
+        <Label htmlFor={`${idPrefix}-time-he`}>{t(translations.admin.timeHeLabel)}</Label>
+        <Input
+          id={`${idPrefix}-time-he`}
+          value={form.timeHe}
+          onChange={(e) => set({ timeHe: e.target.value })}
+        />
+      </div>
+      <div className="space-y-1">
+        <Label htmlFor={`${idPrefix}-time-en`}>{t(translations.admin.timeEnLabel)}</Label>
+        <Input
+          id={`${idPrefix}-time-en`}
+          value={form.timeEn}
+          onChange={(e) => set({ timeEn: e.target.value })}
+        />
+      </div>
+      <div className="space-y-1">
+        <Label htmlFor={`${idPrefix}-price-he`}>{t(translations.admin.priceHeLabel)}</Label>
+        <Input
+          id={`${idPrefix}-price-he`}
+          value={form.priceHe}
+          onChange={(e) => set({ priceHe: e.target.value })}
+        />
+      </div>
+      <div className="space-y-1">
+        <Label htmlFor={`${idPrefix}-price-en`}>{t(translations.admin.priceEnLabel)}</Label>
+        <Input
+          id={`${idPrefix}-price-en`}
+          value={form.priceEn}
+          onChange={(e) => set({ priceEn: e.target.value })}
         />
       </div>
       <div className="space-y-1">

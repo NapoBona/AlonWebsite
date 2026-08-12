@@ -36,6 +36,12 @@ export const translations = {
     title: { he: "אירועים קרובים", en: "Upcoming Events" },
     noEvents: { he: "אין אירועים קרובים כרגע", en: "No upcoming events at the moment" },
     details: { he: "פרטים", en: "Details" },
+    openMapsTitle: { he: "מעבר לגוגל מפות", en: "Open in Google Maps" },
+    openMapsDescription: {
+      he: "הפעולה תפתח את גוגל מפות בחלון/לשונית חדשה.",
+      en: "This will open Google Maps in a new tab.",
+    },
+    openMapsConfirm: { he: "המשך", en: "Continue" },
   },
   social: {
     title: { he: "בואו נתחבר", en: "Let's Connect" },
@@ -65,6 +71,10 @@ export const translations = {
     nameEnLabel: { he: "שם האירוע (אנגלית)", en: "Event name (English)" },
     locationLabel: { he: "מיקום (אופציונלי)", en: "Location (optional)" },
     locationLinkLabel: { he: "קישור למיקום (אופציונלי)", en: "Location link (optional)" },
+    timeHeLabel: { he: "שעה (עברית, אופציונלי)", en: "Time (Hebrew, optional)" },
+    timeEnLabel: { he: "שעה (אנגלית, אופציונלי)", en: "Time (English, optional)" },
+    priceHeLabel: { he: "מחיר (עברית, אופציונלי)", en: "Price (Hebrew, optional)" },
+    priceEnLabel: { he: "מחיר (אנגלית, אופציונלי)", en: "Price (English, optional)" },
     descriptionHeLabel: { he: "תיאור (עברית)", en: "Description (Hebrew)" },
     descriptionEnLabel: { he: "תיאור (אנגלית)", en: "Description (English)" },
     whatsappHeLabel: { he: "הודעת וואטסאפ (עברית, אופציונלי)", en: "WhatsApp message (Hebrew, optional)" },

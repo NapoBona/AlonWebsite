@@ -38,6 +38,20 @@ export function validateEvent(body: any): string | null {
   ) {
     return "Invalid whatsappMessage (he/en)";
   }
+  if (
+    body.price !== undefined &&
+    body.price !== null &&
+    (!isLocalizedText(body.price) || !body.price.he.trim() || !body.price.en.trim())
+  ) {
+    return "Invalid price (he/en)";
+  }
+  if (
+    body.time !== undefined &&
+    body.time !== null &&
+    (!isLocalizedText(body.time) || !body.time.he.trim() || !body.time.en.trim())
+  ) {
+    return "Invalid time (he/en)";
+  }
   if (body.subtitle !== undefined && body.subtitle !== null && !isLocalizedText(body.subtitle)) {
     return "Invalid subtitle";
   }
@@ -68,6 +82,8 @@ export function normalizeEvent(body: any): NewEventInput {
     details: body.details || undefined,
     longDescription: isLocalizedText(body.longDescription) ? body.longDescription : { he: "", en: "" },
     whatsappMessage: isLocalizedText(body.whatsappMessage) ? body.whatsappMessage : undefined,
+    price: isLocalizedText(body.price) ? body.price : undefined,
+    time: isLocalizedText(body.time) ? body.time : undefined,
     link: body.link || "#",
     image: body.image || undefined,
   };

@@ -10,6 +10,8 @@ export interface EventItem {
   subtitle?: LocalizedText;
   location?: string;
   locationLink?: string;
+  price?: LocalizedText;
+  time?: LocalizedText;
   description: LocalizedText;
   details?: LocalizedText;
   longDescription: LocalizedText;
